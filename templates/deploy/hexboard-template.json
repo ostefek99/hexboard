@@ -1,0 +1,247 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "hexboard",
+        "creationTimestamp": null,
+        "annotations": {
+            "name": "hexboard",
+            "description": "Hexboard Demo",
+            "provider": "Red Hat Summit 2015 - JBoss Keynote demo team",
+            "iconClass": "icon-nodejs",
+            "tags": "instant-app,nodejs"
+        }
+    },
+    "parameters": [
+        {
+            "description": "The OpenShift Namespace where the Builds reside.",
+            "name": "NAMESPACE"
+        },
+        {
+            "description": "The OpenShift Namespace where the Application is built.",
+            "value": "hexboard-pipeline",
+            "name": "NAMESPACE_BUILD"
+        },
+        {
+            "description": "The name for the main application.",
+            "name": "APPLICATION_NAME"
+        },
+        {
+            "description": "Number of winners",
+            "value": "10",
+            "name": "WINNER_COUNT"
+        },
+        {
+            "description": "The total number of hexagons (containers) to display in the UI",
+            "value": "micro",
+            "name": "HEXBOARD_SIZE"
+        },
+        {
+            "description": "Admin Secret",
+            "from": "[a-zA-Z0-9]{8}",
+            "generate": "expression",
+            "name": "ADMIN_TOKEN"
+        }
+    ],
+    "objects": [
+        {
+            "apiVersion": "v1",
+            "groupNames": null,
+            "kind": "RoleBinding",
+            "metadata": {
+                "namespace": "${NAMESPACE}",
+                "name": "jenkins_edit"
+            },
+            "roleRef": {
+                "name": "edit"
+            },
+            "subjects": [
+                {
+                    "kind": "ServiceAccount",
+                    "name": "jenkins",
+                    "namespace": "${NAMESPACE_BUILD}"
+                }
+            ]
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "ServiceAccount",
+            "metadata": {
+                "namespace": "${NAMESPACE}",
+                "name": "${APPLICATION_NAME}"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "groupNames": null,
+            "kind": "RoleBinding",
+            "metadata": {
+                "namespace": "${NAMESPACE}",
+                "name": "${APPLICATION_NAME}_edit"
+            },
+            "roleRef": {
+                "name": "edit"
+            },
+            "subjects": [
+                {
+                    "kind": "ServiceAccount",
+                    "name": "${APPLICATION_NAME}"
+                }
+            ]
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "creationTimestamp": null
+            },
+            "spec": {},
+            "status": {
+                "dockerImageRepository": ""
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "namespace": "${NAMESPACE}",
+                "labels": {
+                  "app": "${APPLICATION_NAME}"
+                },
+                "creationTimestamp": null
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Recreate",
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "${APPLICATION_NAME}"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "${APPLICATION_NAME}:latest"
+                            }
+                        }
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "deploymentconfig": "${APPLICATION_NAME}"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "deploymentconfig": "${APPLICATION_NAME}"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "${APPLICATION_NAME}",
+                                "image": "${APPLICATION_NAME}:latest",
+                                "livenessProbe": {
+                                    "httpGet": {
+                                        "path": "/status",
+                                        "port": 8080
+                                    },
+                                    "timeoutSeconds": 5,
+                                    "initialDelaySeconds": 30
+                                },
+                                "env": [
+                                    {
+                                        "name": "HEXBOARD_SIZE",
+                                        "value": "${HEXBOARD_SIZE}"
+                                    },
+                                    {
+                                        "name": "NAMESPACE",
+                                        "value": "${NAMESPACE}"
+                                    },
+                                    {
+                                        "name": "WINNER_COUNT",
+                                        "value": "${WINNER_COUNT}"
+                                    },
+                                    {
+                                        "name": "ADMIN_TOKEN",
+                                        "value": "${ADMIN_TOKEN}"
+                                    }
+                                ],
+                                "ports": [
+                                    {
+                                        "name": "${APPLICATION_NAME}tcp",
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "resources": {},
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "Always",
+                                "securityContext": {
+                                    "capabilities": {},
+                                    "privileged": false
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "serviceAccountName": "${APPLICATION_NAME}",
+                        "dnsPolicy": "ClusterFirst"
+                    }
+                }
+            },
+            "status": {}
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "namespace": "${NAMESPACE}",
+                "creationTimestamp": null
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "${APPLICATION_NAME}tcp",
+                        "protocol": "TCP",
+                        "port": 8080,
+                        "targetPort": 8080,
+                        "nodePort": 0
+                    }
+                ],
+                "selector": {
+                    "deploymentconfig": "${APPLICATION_NAME}"
+                },
+                "portalIP": "",
+                "type": "ClusterIP"
+            }
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "namespace": "${NAMESPACE}",
+                "creationTimestamp": null
+            },
+            "spec": {
+                "host": "",
+                "to": {
+                    "kind": "Service",
+                    "name": "${APPLICATION_NAME}"
+                }
+            },
+            "status": {}
+        }
+    ]
+}

@@ -1,0 +1,113 @@
+{
+  "kind": "Template",
+  "apiVersion": "v1",
+  "metadata": {
+    "annotations": {
+      "description": "Hexboard Pipeline builder"
+    },
+    "name": "hexboard-pipeline"
+  },
+  "labels": {
+    "template": "hexboard-pipeline"
+  },
+  "parameters": [
+    {
+      "name": "NAMESPACE",
+      "description": "The OpenShift Namespace Where this pipeline is deployed",
+      "displayName": "Pipeline Namespace",
+      "required": true
+    },
+    {
+      "name": "NAMESPACE_DEV",
+      "description": "The Dev Namespace",
+      "displayName": "Dev Namespace",
+      "required": true
+    },
+    {
+      "name": "NAMESPACE_DEMO",
+      "description": "The Demo Namespace",
+      "displayName": "Demo Namespace",
+      "required": true
+    },
+    {
+      "name": "APPLICATION_NAME",
+      "description": "The name for the application.",
+      "displayName": "Application name",
+      "required": true
+    },
+    {
+      "name": "REPO_URL",
+      "description": "Git source URI for application",
+      "displayName": "Application source url",
+      "required": true
+    },
+    {
+      "name": "REPO_REF",
+      "description": "Application source branch/tag reference.",
+      "displayName": "Application source branch/tag reference.",
+      "value": "master",
+      "required": false
+    }
+  ],
+  "objects": [
+    {
+      "kind": "BuildConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "labels": {
+          "build": "${APPLICATION_NAME}",
+          "name": "${APPLICATION_NAME}-pipeline"
+        },
+        "name": "${APPLICATION_NAME}-pipeline",
+        "namespace": "${NAMESPACE}"
+      },
+      "spec": {
+        "nodeSelector": {
+        },
+        "output": {
+        },
+        "postCommit": {
+        },
+        "resources": {
+        },
+        "runPolicy": "Serial",
+        "source": {
+          "git": {
+            "ref": "${REPO_REF}",
+            "uri": "${REPO_URL}"
+          },
+          "type": "Git"
+        },
+        "strategy": {
+          "jenkinsPipelineStrategy": {
+            "env": [
+              {
+                "name": "APP_NAME",
+                "value": "${APPLICATION_NAME}"
+              },
+              {
+                "name": "NAMESPACE_BUILD",
+                "value": "${NAMESPACE}"
+              },
+              {
+                "name": "NAMESPACE_DEV",
+                "value": "${NAMESPACE_DEV}"
+              },
+              {
+                "name": "NAMESPACE_DEMO",
+                "value": "${NAMESPACE_DEMO}"
+              }
+            ],
+            "jenkinsfilePath": "Jenkinsfile"
+          },
+          "type": "JenkinsPipeline"
+        },
+        "triggers": [
+          {
+            "type": "ConfigChange"
+          }
+        ]
+      }
+    }
+  ]
+}

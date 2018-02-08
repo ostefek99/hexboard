@@ -1,0 +1,91 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "hexboard-builder",
+        "annotations": {
+            "description": "Hexboard Demo",
+            "provider": "Red Hat Summit 2015 - JBoss Keynote demo team",
+            "iconClass": "icon-nodejs",
+            "tags": "instant-app,nodejs"
+        }
+    },
+    "parameters": [
+        {
+            "description": "The OpenShift Namespace where the Builds reside.",
+            "value": "hexboard-pipeline",
+            "name": "NAMESPACE"
+        },
+        {
+            "description": "The name for the main application.",
+            "name": "APPLICATION_NAME"
+        },
+        {
+            "description": "Git source URI for the application",
+            "name": "SCM_URL"
+        },
+        {
+            "description": "The application source branch/tag reference.",
+            "value": "master",
+            "name": "SCM_REF"
+        },
+        {
+            "description": "builder image",
+            "value": "nodejs:4",
+            "name": "BUILDER_IMAGE"
+        }
+    ],
+    "objects": [
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "namespace": "${NAMESPACE}",
+                "creationTimestamp": null
+            },
+            "spec": {},
+            "status": {
+                "dockerImageRepository": ""
+            }
+        },
+        {
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "namespace": "${NAMESPACE}",
+                "creationTimestamp": null
+            },
+            "spec": {
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "${SCM_URL}",
+                        "ref": "${SCM_REF}"
+                    }
+                },
+                "strategy": {
+                    "type": "Source",
+                    "sourceStrategy": {
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "namespace": "openshift",
+                            "name": "${BUILDER_IMAGE}"
+                        }
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "${APPLICATION_NAME}:latest"
+                    }
+                },
+                "resources": {}
+            },
+            "status": {
+                "lastVersion": 0
+            }
+        }
+    ]
+}

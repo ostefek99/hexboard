@@ -1,0 +1,54 @@
+---
+
+openshift_cluster_content:
+- object: projectrequest
+  content:
+  - name: "hexboard-pipeline"
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/master/files/projectrequest/template.yml"
+    params: "{{ inventory_dir }}/../templates/projectrequest/pipeline.params"
+    template_action: create
+  - name: "hexboard-dev"
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/master/files/projectrequest/template.yml"
+    params: "{{ inventory_dir }}/../templates/projectrequest/dev.params"
+    template_action: create
+  - name: "hexboard-demo"
+    template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/master/files/projectrequest/template.yml"
+    params: "{{ inventory_dir }}/../templates/projectrequest/demo.params"
+    template_action: create
+- object: builds
+  content:
+  - name: "hexboard-pipeline"
+    template: "{{ inventory_dir }}/../templates/build/template-pipeline.json"
+    params: "{{ inventory_dir }}/../templates/build/hexboard-pipeline.params"
+    namespace: "hexboard-pipeline"
+  - name: "hexboard-build"
+    template: "{{ inventory_dir }}/../templates/build/template-build.json"
+    params: "{{ inventory_dir }}/../templates/build/hexboard-build.params"
+    namespace: "hexboard-pipeline"
+  - name: "sketchpod-pipeline"
+    template: "{{ inventory_dir }}/../templates/build/sketchpod-template-pipeline.json"
+    params: "{{ inventory_dir }}/../templates/build/sketchpod-pipeline.params"
+    namespace: "hexboard-pipeline"
+  - name: "sketchpod-build"
+    template: "{{ inventory_dir }}/../templates/build/sketchpod-template-build.json"
+    params: "{{ inventory_dir }}/../templates/build/sketchpod-build.params"
+    namespace: "hexboard-pipeline"
+- object: deployments
+  content:
+  - name: "hexboard-dev"
+    template: "{{ inventory_dir }}/../templates/deploy/hexboard-template.json"
+    params: "{{ inventory_dir }}/../templates/deploy/hexboard-dev.params"
+    namespace: "hexboard-dev"
+  - name: "hexboard-demo"
+    template: "{{ inventory_dir }}/../templates/deploy/hexboard-template.json"
+    params: "{{ inventory_dir }}/../templates/deploy/hexboard-demo.params"
+    namespace: "hexboard-demo"
+  - name: "sketchpod-dev"
+    template: "{{ inventory_dir }}/../templates/deploy/sketchpod-template.json"
+    params: "{{ inventory_dir }}/../templates/deploy/sketchpod-dev.params"
+    namespace: "hexboard-dev"
+  - name: "sketchpod-demo"
+    template: "{{ inventory_dir }}/../templates/deploy/sketchpod-template.json"
+    params: "{{ inventory_dir }}/../templates/deploy/sketchpod-demo.params"
+    namespace: "hexboard-demo"
+

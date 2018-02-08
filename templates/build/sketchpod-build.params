@@ -1,0 +1,4 @@
+NAMESPACE=hexboard-pipeline
+APPLICATION_NAME=sketchpod
+REPO_URL=https://github.com/rht-labs/sketchpod.git
+REPO_REF=master
