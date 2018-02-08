@@ -1,0 +1,3 @@
+NAMESPACE=hexboard-dev
+NAMESPACE_BUILD=hexboard-pipeline
+APPLICATION_NAME=sketchpod

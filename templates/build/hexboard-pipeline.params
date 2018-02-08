@@ -1,0 +1,6 @@
+NAMESPACE=hexboard-pipeline
+NAMESPACE_DEV=hexboard-dev
+NAMESPACE_DEMO=hexboard-demo
+APPLICATION_NAME=hexboard
+SCM_URL=https://github.com/rht-labs/hexboard.git
+SCM_REF=master

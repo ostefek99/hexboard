@@ -1,7 +1,10 @@
+var fs = require('fs');
+
 var multipaas  = require('config-multipaas');
 var autoconfig = function (config_overrides){
+  var access_token = fs.readFileSync('/var/run/secrets/kubernetes.io/serviceaccount/token');
   var config   = multipaas(config_overrides).add({
-    OAUTH_TOKEN: process.env.ACCESS_TOKEN || false
+    OAUTH_TOKEN: access_token || false
   , ADMIN_TOKEN: process.env.ADMIN_TOKEN || false
   , ALLOWED_SUBNET: process.env.ALLOWED_SUBNET || false
   , SKIP_HEALTH_CHECK: process.env.SKIP_HEALTH_CHECK || false
