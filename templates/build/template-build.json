@@ -31,7 +31,7 @@
         },
         {
             "description": "builder image",
-            "value": "nodejs:4",
+            "value": "nodejs:10",
             "name": "BUILDER_IMAGE"
         }
     ],
