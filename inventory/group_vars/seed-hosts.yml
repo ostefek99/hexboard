@@ -6,15 +6,15 @@ openshift_cluster_content:
   - name: "hexboard-pipeline"
     template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/master/files/projectrequest/template.yml"
     params: "{{ inventory_dir }}/../templates/projectrequest/pipeline.params"
-    template_action: create
+    action: create
   - name: "hexboard-dev"
     template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/master/files/projectrequest/template.yml"
     params: "{{ inventory_dir }}/../templates/projectrequest/dev.params"
-    template_action: create
+    action: create
   - name: "hexboard-demo"
     template: "https://raw.githubusercontent.com/redhat-cop/cluster-lifecycle/master/files/projectrequest/template.yml"
     params: "{{ inventory_dir }}/../templates/projectrequest/demo.params"
-    template_action: create
+    action: create
 - object: jenkins
   content:
   - name: "infographic-pipeline"
