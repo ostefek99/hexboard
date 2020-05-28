@@ -273,8 +273,8 @@
                 "source": {
                     "type": "Git",
                     "git": {
-                        "uri": "http://github.com/ryanj/hexboard",
-                        "ref": "master"
+                        "uri": "http://github.com/ostefek99/hexboard",
+                        "ref": "ocp4-fixes"
                     }
                 },
                 "strategy": {
