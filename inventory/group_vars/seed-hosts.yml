@@ -17,10 +17,10 @@ openshift_cluster_content:
     action: create
 - object: jenkins
   content:
-  - name: "infographic-pipeline"
+  - name: "hexboard-pipeline"
     template: "https://raw.githubusercontent.com/redhat-cop/openshift-templates/v1.4.15/jenkins/jenkins-ephemeral-template.yml"
     params: "{{ inventory_dir }}/../templates/deploy/jenkins.params"
-    namespace: "infographic-pipeline"
+    namespace: "hexboard-pipeline"
 - object: builds
   content:
   - name: "hexboard-pipeline"
