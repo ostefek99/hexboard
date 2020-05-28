@@ -31,4 +31,8 @@ echo "---> Installing application source"
 cp -Rf /tmp/src/. ./
 
 echo "---> Building your Node application from source"
+echo ">>> DEBUG <<<"
+echo "$(pwd)"
+echo "$(ls -la)"
+echo ">>> DEBUG <<<"
 npm install -d
