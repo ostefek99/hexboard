@@ -28,7 +28,8 @@
     "gulp-template": "^5.0.0",
     "gulp-util": "^3.0.8",
     "node-env-file": "^0.1.8",
-    "open": "7.0.4"
+    "open": "^7.0.4",
+    "v8-debug": "^1.0.1"
   },
   "dependencies": {
     "base64-stream": "^1.0.0",
