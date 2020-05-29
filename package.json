@@ -11,7 +11,7 @@
   "author": "Brian Leathem",
   "license": "ASLv2",
   "devDependencies": {
-    "node-inspector": "^1.1.2",
+    "node-inspector": "^0.7.5",
     "should": "^13.2.3",
     "superagent": "^5.2.2",
     "supertest": "^4.0.2",
