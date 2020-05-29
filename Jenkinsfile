@@ -24,12 +24,12 @@ node('') {
 
     // no user changes should be needed below this point
     stage ('Deploy to Dev') {
-        sh "oc tag ${env.NAMESPACE_DEV}/${env.APP_NAME}:latest ${env.NAMESPACE_TEST}/${env.APP_NAME}:latest"
+        sh "oc tag ${env.NAMESPACE_BUILD}/${env.APP_NAME}:latest ${env.NAMESPACE_DEV}/${env.APP_NAME}:latest"
     }
 
     stage ('Deploy to Demo') {
         input "Promote Application to Demo?"
-        sh "oc tag ${env.NAMESPACE_DEMO}/${env.APP_NAME}:latest ${env.NAMESPACE_TEST}/${env.APP_NAME}:latest"
+        sh "oc tag ${env.NAMESPACE_DEV}/${env.APP_NAME}:latest ${env.NAMESPACE_DEMO}/${env.APP_NAME}:latest"
     }
 
 }
